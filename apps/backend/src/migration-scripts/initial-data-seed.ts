@@ -78,7 +78,7 @@ export default async function initial_data_seed({
     input: {
       stores: [
         {
-          name: "Wheel Caps Store",
+          name: "Hub & Hue",
           supported_currencies: [
             {
               currency_code: "usd",
