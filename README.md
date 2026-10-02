@@ -1,4 +1,4 @@
-# Wheel Caps Store
+# Hub & Hue
 
 Medusa backend + Next.js storefront for 3D-printed truck wheel caps.
 
