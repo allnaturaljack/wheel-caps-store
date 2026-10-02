@@ -1,0 +1,12 @@
+{
+  "name": "wheel-caps-dev-db",
+  "private": true,
+  "type": "module",
+  "description": "Project-local PostgreSQL for development (no system install needed)",
+  "scripts": {
+    "start": "node start.mjs"
+  },
+  "dependencies": {
+    "embedded-postgres": "17.10.0-beta.17"
+  }
+}
