@@ -3,10 +3,15 @@ import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Logo from "@modules/layout/components/logo"
 
-const FITMENTS = [
-  "Ford Super Duty (8x170)",
-  "Ram 2500/3500 (8x165.1)",
-  "GM 2500HD/3500HD (8x180)",
+const HELP_LINKS = [
+  { label: "Contact", href: "/contact" },
+  { label: "Shipping", href: "/shipping" },
+  { label: "Returns & exchanges", href: "/returns" },
+]
+
+const LEGAL_LINKS = [
+  { label: "Privacy policy", href: "/content/privacy-policy" },
+  { label: "Terms of use", href: "/content/terms-of-use" },
 ]
 
 const ACCOUNT_LINKS = [
@@ -58,10 +63,17 @@ export default async function Footer() {
           </div>
 
           <div className="flex flex-col gap-y-4">
-            <span className={columnTitle}>Fitments</span>
+            <span className={columnTitle}>Help</span>
             <ul className="grid gap-y-2.5 text-sm">
-              {FITMENTS.map((fitment) => (
-                <li key={fitment}>{fitment}</li>
+              {HELP_LINKS.map((link) => (
+                <li key={link.href}>
+                  <LocalizedClientLink
+                    href={link.href}
+                    className="hover:text-white"
+                  >
+                    {link.label}
+                  </LocalizedClientLink>
+                </li>
               ))}
             </ul>
           </div>
@@ -82,8 +94,22 @@ export default async function Footer() {
             </ul>
           </div>
         </div>
-        <div className="flex w-full border-t border-white/10 py-6 text-xs text-white/40">
-          © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+        <div className="flex w-full flex-col gap-3 border-t border-white/10 py-6 text-xs text-white/40 xsmall:flex-row xsmall:items-center xsmall:justify-between">
+          <span>
+            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
+          </span>
+          <ul className="flex gap-x-5">
+            {LEGAL_LINKS.map((link) => (
+              <li key={link.href}>
+                <LocalizedClientLink
+                  href={link.href}
+                  className="hover:text-white"
+                >
+                  {link.label}
+                </LocalizedClientLink>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

@@ -379,3 +379,70 @@ export const updateCustomerAddress = async (
       return { success: false, error: err.toString() }
     })
 }
+
+export type PasswordResetRequestState =
+  | { state: "sent"; email: string }
+  | { state: "error"; error: string }
+  | null
+
+// Asks the backend to email a password reset link. Reports success whether or
+// not an account exists, so the form can't be used to probe for accounts.
+export async function requestPasswordReset(
+  _currentState: unknown,
+  formData: FormData
+): Promise<PasswordResetRequestState> {
+  const email = ((formData.get("email") as string) || "").trim()
+
+  if (!email) {
+    return { state: "error", error: "Enter your email address." }
+  }
+
+  await sdk.auth
+    .resetPassword("customer", "emailpass", { identifier: email })
+    .catch(() => undefined)
+
+  return { state: "sent", email }
+}
+
+export type PasswordResetState =
+  | { state: "success" }
+  | { state: "error"; error: string }
+  | null
+
+// Sets a new password using the token from the reset email.
+export async function resetPassword(
+  _currentState: unknown,
+  formData: FormData
+): Promise<PasswordResetState> {
+  const token = formData.get("token") as string
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+  const confirmPassword = formData.get("confirm_password") as string
+
+  if (!token || !email) {
+    return {
+      state: "error",
+      error: "This reset link is invalid. Request a new one.",
+    }
+  }
+
+  if (password !== confirmPassword) {
+    return { state: "error", error: "The passwords don't match." }
+  }
+
+  try {
+    await sdk.auth.updateProvider(
+      "customer",
+      "emailpass",
+      { email, password },
+      token
+    )
+  } catch {
+    return {
+      state: "error",
+      error: "This reset link is invalid or has expired. Request a new one.",
+    }
+  }
+
+  return { state: "success" }
+}

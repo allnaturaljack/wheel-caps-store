@@ -2,7 +2,6 @@ import React, { Suspense } from "react"
 
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
-import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
@@ -46,7 +45,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="flex w-full flex-col gap-y-8 small:max-w-[520px]">
           <ProductInfo product={product} />
-          <ProductOnboardingCta />
           <Suspense
             fallback={
               <ProductActions

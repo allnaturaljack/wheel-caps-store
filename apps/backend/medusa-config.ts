@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig, MedusaError } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -10,7 +10,8 @@ if (isProduction && !isBuild) {
   for (const name of ['JWT_SECRET', 'COOKIE_SECRET']) {
     const value = process.env[name]
     if (!value || value === 'supersecret' || value.length < 32) {
-      throw new Error(
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
         `${name} must be set to a random value of at least 32 characters in production.`
       )
     }
