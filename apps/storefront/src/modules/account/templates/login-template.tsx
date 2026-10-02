@@ -2,12 +2,14 @@
 
 import { useState } from "react"
 
+import ForgotPassword from "@modules/account/components/forgot-password"
 import Register from "@modules/account/components/register"
 import Login from "@modules/account/components/login"
 
 export enum LOGIN_VIEW {
   SIGN_IN = "sign-in",
   REGISTER = "register",
+  FORGOT_PASSWORD = "forgot-password",
 }
 
 const LoginTemplate = () => {
@@ -17,6 +19,8 @@ const LoginTemplate = () => {
     <div className="w-full flex justify-start px-8 py-8">
       {currentView === "sign-in" ? (
         <Login setCurrentView={setCurrentView} />
+      ) : currentView === "forgot-password" ? (
+        <ForgotPassword setCurrentView={setCurrentView} />
       ) : (
         <Register setCurrentView={setCurrentView} />
       )}

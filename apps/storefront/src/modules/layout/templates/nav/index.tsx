@@ -1,9 +1,5 @@
 import { Suspense } from "react"
 
-import { listLocales } from "@lib/data/locales"
-import { getLocale } from "@lib/data/locale-actions"
-import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import Logo from "@modules/layout/components/logo"
@@ -16,13 +12,7 @@ const NAV_LINKS = [
   { label: "Lug Nut Covers", href: "/categories/lug-nut-covers" },
 ]
 
-export default async function Nav() {
-  const [regions, locales, currentLocale] = await Promise.all([
-    listRegions().then((regions: StoreRegion[]) => regions),
-    listLocales(),
-    getLocale(),
-  ])
-
+export default function Nav() {
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
       <div className="bg-brand text-white">
@@ -34,11 +24,7 @@ export default async function Nav() {
         <nav className="content-container text-white/70 flex items-center justify-between w-full h-full text-sm">
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0">
             <div className="h-full small:hidden">
-              <SideMenu
-                regions={regions}
-                locales={locales}
-                currentLocale={currentLocale}
-              />
+              <SideMenu />
             </div>
             <LocalizedClientLink
               href="/"

@@ -1,5 +1,5 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import { Modules } from "@medusajs/framework/utils"
 
 import { getStoreName } from "../lib/store-name"
 import type { PasswordResetData } from "../modules/resend/templates"
@@ -8,27 +8,26 @@ export default async function passwordResetHandler({
   event: { data },
   container,
 }: SubscriberArgs<{ entity_id: string; actor_type: string; token: string }>) {
-  const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-
-  // Only admin users can reset by email for now: the storefront has no
-  // reset-password page for a customer link to land on.
-  if (data.actor_type !== "user") {
-    logger.warn(
-      `Password reset requested for actor type "${data.actor_type}", which has no reset page. No email sent.`
-    )
-    return
-  }
-
   const notificationModuleService = container.resolve(Modules.NOTIFICATION)
-  const backendUrl = process.env.MEDUSA_BACKEND_URL || "http://localhost:9000"
   const params = new URLSearchParams({
     token: data.token,
     email: data.entity_id,
   })
 
+  // Admin users reset in the dashboard; customers on the storefront, which
+  // adds the country prefix to the path itself.
+  const resetUrl =
+    data.actor_type === "user"
+      ? `${
+          process.env.MEDUSA_BACKEND_URL || "http://localhost:9000"
+        }/app/reset-password?${params}`
+      : `${
+          process.env.STOREFRONT_URL || "http://localhost:8000"
+        }/reset-password?${params}`
+
   const emailData: PasswordResetData = {
     store_name: await getStoreName(container),
-    reset_url: `${backendUrl}/app/reset-password?${params}`,
+    reset_url: resetUrl,
   }
 
   await notificationModuleService.createNotifications({

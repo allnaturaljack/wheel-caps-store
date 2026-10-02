@@ -3,6 +3,7 @@
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
 
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Accordion from "./accordion"
 import { HttpTypes } from "@medusajs/types"
 
@@ -98,6 +99,15 @@ const ShippingInfoTab = () => {
             <p className="max-w-sm">
               Caps are made for one bolt pattern. Confirm your truck&apos;s
               pattern before ordering.
+            </p>
+            <p className="mt-2">
+              <LocalizedClientLink href="/shipping" className="underline">
+                Shipping
+              </LocalizedClientLink>{" "}
+              &middot;{" "}
+              <LocalizedClientLink href="/returns" className="underline">
+                Returns &amp; exchanges
+              </LocalizedClientLink>
             </p>
           </div>
         </div>
