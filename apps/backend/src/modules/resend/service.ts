@@ -13,6 +13,7 @@ import { templates } from "./templates"
 type ResendOptions = {
   api_key: string
   from: string
+  reply_to?: string
 }
 
 type InjectedDependencies = {
@@ -74,6 +75,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       body: JSON.stringify({
         from: notification.from?.trim() || this.options_.from,
         to: [notification.to],
+        reply_to: this.options_.reply_to || undefined,
         subject: content.subject,
         html: content.html,
         text: content.text,

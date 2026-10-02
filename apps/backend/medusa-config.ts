@@ -122,6 +122,7 @@ const notificationModules = [
                   channels: ['email'],
                   api_key: process.env.RESEND_API_KEY,
                   from: process.env.RESEND_FROM_EMAIL,
+                  reply_to: process.env.RESEND_REPLY_TO_EMAIL,
                 },
               },
             ]
