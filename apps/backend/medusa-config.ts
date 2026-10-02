@@ -98,6 +98,39 @@ const fileModules = process.env.S3_BUCKET
     ]
   : []
 
+// Without a Resend key, emails are logged to the console instead of sent.
+const hasResend = Boolean(process.env.RESEND_API_KEY)
+const notificationModules = [
+  {
+    resolve: '@medusajs/medusa/notification',
+    options: {
+      providers: [
+        {
+          resolve: '@medusajs/medusa/notification-local',
+          id: 'local',
+          options: {
+            name: 'Local Notification Provider',
+            channels: hasResend ? ['feed'] : ['feed', 'email'],
+          },
+        },
+        ...(hasResend
+          ? [
+              {
+                resolve: './src/modules/resend',
+                id: 'resend',
+                options: {
+                  channels: ['email'],
+                  api_key: process.env.RESEND_API_KEY,
+                  from: process.env.RESEND_FROM_EMAIL,
+                },
+              },
+            ]
+          : []),
+      ],
+    },
+  },
+]
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -119,5 +152,10 @@ module.exports = defineConfig({
     disable: process.env.DISABLE_MEDUSA_ADMIN === 'true',
     backendUrl: process.env.MEDUSA_BACKEND_URL,
   },
-  modules: [...redisModules, ...stripeModules, ...fileModules],
+  modules: [
+    ...redisModules,
+    ...stripeModules,
+    ...fileModules,
+    ...notificationModules,
+  ],
 })
