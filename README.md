@@ -11,11 +11,14 @@ dev-db            Project-local PostgreSQL for development
 
 ## Local development
 
+The workspace uses [pnpm](https://pnpm.io); with Node 22+ run
+`corepack enable pnpm` once to get it.
+
 ```bash
-npm install
-npm --prefix dev-db install
-npm run db    # terminal 1: Postgres on localhost:5432 (data in dev-db/data)
-npm run dev   # terminal 2: backend + admin on :9000, storefront on :8000
+pnpm install
+npm --prefix dev-db install   # the dev database is a standalone package
+pnpm db    # terminal 1: Postgres on localhost:5432 (data in dev-db/data)
+pnpm dev   # terminal 2: backend + admin on :9000, storefront on :8000
 ```
 
 Copy `apps/backend/.env.template` to `apps/backend/.env` and fill in
@@ -26,7 +29,7 @@ API key (Admin > Settings > Publishable API Keys).
 Create an admin login:
 
 ```bash
-cd apps/backend && npx medusa user -e <email> -p <password>
+cd apps/backend && pnpm exec medusa user -e <email> -p <password>
 ```
 
 The starter catalog, US region and shipping options are seeded by
