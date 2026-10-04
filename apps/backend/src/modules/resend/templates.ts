@@ -192,8 +192,139 @@ const passwordReset = (data: PasswordResetData): EmailContent => {
   }
 }
 
+type FitmentRequestReceivedData = {
+  store_name: string
+  name: string
+  vehicle: string
+  method: "photos" | "mail"
+  mailing_address: string[] | null
+  discount_percent: number
+}
+
+const fitmentRequestReceived = (
+  data: FitmentRequestReceivedData
+): EmailContent => {
+  const intro = `Thanks, ${data.name}. We got your request for a cap that fits your ${data.vehicle}.`
+  const reward = `Once we have what we need, we'll email you a one-time code for ${data.discount_percent}% off your order.`
+
+  const steps =
+    data.method === "photos"
+      ? [
+          "Reply to this email with photos of your current cap: the front, the back, and one with a tape measure across it.",
+          "Include your wheel's bolt pattern if you know it.",
+        ]
+      : [
+          data.mailing_address
+            ? `Mail your cap to: ${data.mailing_address.join(", ")}`
+            : "We'll email you the address to mail your cap to.",
+          "Put a note with your name and email in the box.",
+          "We'll send your original cap back with your order.",
+        ]
+
+  const html = layout(
+    data.store_name,
+    `<h1 style="margin:0 0 8px;font-size:24px;">We're on it</h1>
+                <p style="margin:0 0 16px;color:#6b7280;">${escapeHtml(intro)}</p>
+                <h2 style="margin:0 0 6px;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:${BRAND_COLOR};">Next steps</h2>
+                <ul style="margin:0 0 16px;padding-left:20px;">${steps
+                  .map((step) => `<li style="margin-bottom:6px;">${escapeHtml(step)}</li>`)
+                  .join("")}</ul>
+                <p style="margin:0;">${escapeHtml(reward)}</p>`
+  )
+
+  return {
+    subject: `Your ${data.store_name} fitment request`,
+    html,
+    text: [intro, "", "Next steps:", ...steps.map((step) => `- ${step}`), "", reward].join("\n"),
+  }
+}
+
+type FitmentRequestNewData = {
+  store_name: string
+  name: string
+  email: string
+  vehicle: string
+  method: "photos" | "mail"
+  notes: string | null
+  product_handle: string | null
+  admin_url: string
+}
+
+const fitmentRequestNew = (data: FitmentRequestNewData): EmailContent => {
+  const rows: [string, string][] = [
+    ["Customer", `${data.name} <${data.email}>`],
+    ["Truck", data.vehicle],
+    ["Sending", data.method === "photos" ? "Photos by email" : "Mailing the cap (return it with their order)"],
+    ...(data.product_handle ? [["From product", data.product_handle] as [string, string]] : []),
+    ...(data.notes ? [["Notes", data.notes] as [string, string]] : []),
+  ]
+
+  const html = layout(
+    data.store_name,
+    `<h1 style="margin:0 0 16px;font-size:22px;">New fitment request</h1>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:15px;">${rows
+                  .map(
+                    ([label, value]) => `<tr>
+                    <td style="padding:6px 12px 6px 0;color:#6b7280;vertical-align:top;white-space:nowrap;">${escapeHtml(label)}</td>
+                    <td style="padding:6px 0;">${escapeHtml(value)}</td>
+                  </tr>`
+                  )
+                  .join("")}</table>
+                <p style="margin:20px 0 0;"><a href="${escapeHtml(data.admin_url)}" style="color:${BRAND_COLOR};font-weight:700;">Open fitment requests</a></p>`
+  )
+
+  return {
+    subject: `New fitment request: ${data.vehicle}`,
+    html,
+    text: [...rows.map(([label, value]) => `${label}: ${value}`), "", data.admin_url].join("\n"),
+  }
+}
+
+type FitmentDiscountCodeData = {
+  store_name: string
+  name: string
+  vehicle: string
+  code: string
+  discount_percent: number
+  store_url: string
+  returns_original: boolean
+}
+
+const fitmentDiscountCode = (data: FitmentDiscountCodeData): EmailContent => {
+  const intro = `Thanks for helping us make caps for the ${data.vehicle}, ${data.name}. Here's your ${data.discount_percent}% off code. It works once, on your next order.`
+  const returnNote = data.returns_original
+    ? "We'll send your original cap back with that order."
+    : ""
+
+  const html = layout(
+    data.store_name,
+    `<h1 style="margin:0 0 8px;font-size:24px;">Your ${data.discount_percent}% off code</h1>
+                <p style="margin:0 0 20px;color:#6b7280;">${escapeHtml(intro)}</p>
+                <p style="margin:0 0 20px;text-align:center;"><span style="display:inline-block;border:2px dashed ${BRAND_COLOR};padding:12px 24px;font-size:24px;font-weight:700;letter-spacing:0.12em;">${escapeHtml(data.code)}</span></p>
+                <p style="margin:0 0 20px;color:#6b7280;">Enter it at checkout under "Add Promotion Code".${returnNote ? ` ${escapeHtml(returnNote)}` : ""}</p>
+                <a href="${escapeHtml(data.store_url)}" style="display:inline-block;background:${BRAND_COLOR};color:#ffffff;text-decoration:none;font-weight:700;padding:12px 24px;border-radius:6px;">Shop now</a>`
+  )
+
+  return {
+    subject: `Your ${data.discount_percent}% off code from ${data.store_name}`,
+    html,
+    text: [
+      intro,
+      "",
+      `Code: ${data.code}`,
+      'Enter it at checkout under "Add Promotion Code".',
+      ...(returnNote ? [returnNote] : []),
+      "",
+      data.store_url,
+    ].join("\n"),
+  }
+}
+
 // Keyed by the `template` passed to `createNotifications`.
 export const templates: Record<string, (data: any) => EmailContent> = {
   "order-placed": orderPlaced,
   "password-reset": passwordReset,
+  "fitment-request-received": fitmentRequestReceived,
+  "fitment-request-new": fitmentRequestNew,
+  "fitment-discount-code": fitmentDiscountCode,
 }

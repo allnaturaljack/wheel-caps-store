@@ -1,5 +1,6 @@
 import React, { Suspense } from "react"
 
+import FitmentRequest from "@modules/products/components/fitment-request"
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductTabs from "@modules/products/components/product-tabs"
@@ -56,6 +57,9 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           >
             <ProductActionsWrapper id={product.id} region={region} />
           </Suspense>
+          {product.options?.some((option) => option.title === "Fitment") && (
+            <FitmentRequest productHandle={product.handle} />
+          )}
           <ProductTabs product={product} />
         </div>
       </div>

@@ -155,6 +155,7 @@ module.exports = defineConfig({
     backendUrl: process.env.MEDUSA_BACKEND_URL,
   },
   modules: [
+    { resolve: './src/modules/fitment-request' },
     ...redisModules,
     ...stripeModules,
     ...fileModules,
