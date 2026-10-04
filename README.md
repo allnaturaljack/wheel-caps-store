@@ -47,6 +47,11 @@ The brand name, tagline and support email live in
 `apps/storefront/src/lib/brand.ts`. The store name used in emails is set in the
 admin under Settings > Store.
 
+## Deployment
+
+See [DEPLOY.md](DEPLOY.md): storefront on Vercel, backend and Redis on Railway,
+Postgres on Neon.
+
 ## Before launch
 
 The contact, shipping, returns, privacy and terms pages are drafts: each shows
