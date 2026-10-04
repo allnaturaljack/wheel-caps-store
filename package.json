@@ -1,12 +1,12 @@
 {
   "name": "hub-and-hue",
   "private": true,
-  "packageManager": "npm@11.8.0",
+  "packageManager": "pnpm@10.11.1",
   "engines": {
     "node": ">=22.15.0"
   },
   "scripts": {
-    "db": "npm --prefix dev-db start",
+    "db": "node dev-db/start.mjs",
     "dev": "turbo dev",
     "build": "turbo build",
     "start": "turbo start",
@@ -30,19 +30,6 @@
     "prettier": "^3.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "turbo": "^2.0.14",
-    "ajv": "^8.13.0"
-  },
-  "workspaces": [
-    "apps/**",
-    "!apps/backend/.medusa/**"
-  ],
-  "overrides": {
-    "eslint": {
-      "ajv": "^6.12.4"
-    },
-    "@eslint/eslintrc": {
-      "ajv": "^6.12.4"
-    }
+    "turbo": "^2.0.14"
   }
 }
