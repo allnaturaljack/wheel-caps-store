@@ -35,7 +35,7 @@ export default async function Footer() {
         <div className="grid gap-12 py-16 small:grid-cols-[1.4fr_1fr_1fr_1fr] small:py-20">
           <div className="flex flex-col gap-y-4 max-w-xs">
             <LocalizedClientLink href="/" className="text-white">
-              <Logo />
+              <Logo className="h-10 small:h-12" />
             </LocalizedClientLink>
             <p className="text-sm leading-6">{BRAND.tagline}</p>
           </div>
