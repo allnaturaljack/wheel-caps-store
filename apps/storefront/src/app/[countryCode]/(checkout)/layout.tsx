@@ -29,7 +29,7 @@ export default function CheckoutLayout({
             className="text-ink-900"
             data-testid="store-link"
           >
-            <Logo />
+            <Logo variant="dark" />
           </LocalizedClientLink>
           <div className="flex-1 basis-0" />
         </nav>
